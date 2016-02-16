@@ -15,6 +15,7 @@ ido.last
 
 ## directories
 backups/*
+auto-save-list/*
 thumbs/*
 oddmuse/*
 eshell/*

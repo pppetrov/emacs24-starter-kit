@@ -1,0 +1,72 @@
+#+TITLE: Personal EMacs Config
+
+* Global Configs
+** Hide Menu and Tool Bars
+#+name: hide-menu
+#+begin_src emacs-lisp
+  (show-paren-mode 1)
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+#+end_src
+
+** Backup Config
+#+name: backups
+#+begin_src emacs-lisp
+  (setq backup-directory-alist `(("." . "~/.emacs.d/backups/"))
+        backup-by-copying t
+        delete-old-versions -1
+        kept-new-versions 6
+        kept-old-versions 2
+        version-control t
+        auto-save-file-name-transforms `((".*" "~/.emacs.d/auto-save-list/" t)))
+#+end_src
+
+** Flyspell Config
+#+name flyspell
+#+begin_src emacs-lisp
+  (dolist (hook '(text-mode-hook))
+    (add-hook hook (lambda () (flyspell-mode 1))))
+  (dolist (hook '(change-log-mode-hook log-edit-mode-hook))
+    (add-hook hook (lambda () (flyspell-mode -1))))
+#+end_src
+
+* Global Key Bindings 
+#+name: basic-global-key-bindings
+#+begin_src emacs-lisp
+  (define-key global-map (kbd "<f8>") 'flyspell-correct-word-before-point)
+  (define-key global-map (kbd "<f5>") 'revert-buffer)
+  (windmove-default-keybindings 'meta)
+#+end_src
+
+* Yasnippet
+#+name: yasnippet
+#+begin_src emacs-lisp
+  (starter-kit-load "yasnippet")
+#+end_src
+
+* Neotree
+#+name: neo-tree
+#+BEGIN_SRC emacs-lisp
+  (starter-kit-install-if-needed 'neotree)
+  (global-set-key [f9] 'neotree-toggle)
+#+END_SRC
+  
+* ORG
+#+name: org-config
+#+BEGIN_SRC emacs-lisp
+  (starter-kit-load "starter-kit-org.org")
+  (global-set-key "\C-cl" 'org-store-link)
+  (global-set-key "\C-cc" 'org-capture)
+  (setq org-directory "~/org")
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
+  (setq org-archive-location "%s_archive::datetree")
+  (setq org-capture-templates
+        '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
+           "* TODO %^{Task} %^g \n %? \n Entered: %u \n")
+          ("j" "Journal" entry (file+datetree "~/org/journal.org")
+           "* %?\nEntered on %U\n  %i\n  %a")))
+#+END_SRC
+
+* Webmode
+
