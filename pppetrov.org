@@ -1,4 +1,4 @@
-#+TITLE: Personal EMacs Config
+#+TITLE: Personal Emacs Config
 
 * Global Configs
 ** Hide Menu and Tool Bars
@@ -31,19 +31,31 @@
     (add-hook hook (lambda () (flyspell-mode -1))))
 #+end_src
 
+** Indenting
+#+name: indent
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
+
+** Column Indicator
+#+name: fill-column
+#+BEGIN_SRC emacs-lisp
+  (starter-kit-install-if-needed `fill-column-indicator)
+  (setq fci-rule-column 80)
+  (setq fci-rule-color "grey")
+#+END_SRC
+
 * Global Key Bindings 
 #+name: basic-global-key-bindings
 #+begin_src emacs-lisp
   (define-key global-map (kbd "<f8>") 'flyspell-correct-word-before-point)
   (define-key global-map (kbd "<f5>") 'revert-buffer)
   (windmove-default-keybindings 'meta)
+  (global-set-key (kbd "C-c C-x TAB") 'indent-region)
+  (define-key global-map "\C-c/" 'comment-dwim)
+  (define-key global-map (kbd "C-c C-a") 'mark-whole-buffer)
 #+end_src
 
-* Yasnippet
-#+name: yasnippet
-#+begin_src emacs-lisp
-  (starter-kit-load "yasnippet")
-#+end_src
 
 * Neotree
 #+name: neo-tree
@@ -69,4 +81,97 @@
 #+END_SRC
 
 * Webmode
+#+name: web-mode-config
+#+BEGIN_SRC emacs-lisp
+  (starter-kit-install-if-needed 'web-mode)
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (define-key web-mode-map "\C-co"
+                'browse-url-of-file)))
+  (defun my-web-mode-hook ()
+    "Hooks for Web mode."
+    (setq web-mode-markup-indent-offset 2)
+  )
+  (add-hook 'web-mode-hook  'my-web-mode-hook)
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
+#+END_SRC
+
+* Markdown mode
+#+name: mardown
+#+BEGIN_SRC emacs-lisp
+  (autoload 'markdown-mode "markdown-mode"
+     "Major mode for editing Markdown files" t)
+  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+  (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode))
+#+END_SRC
+
+* JS mode
+#+name: jsmode
+#+BEGIN_SRC emacs-lisp
+  (starter-kit-install-if-needed 'js2-mode)
+  (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
+  (add-hook 'js-mode-hook 'js2-minor-mode)
+  (add-hook 'js-mode-hook 'fci-mode)
+  (add-hook 'js2-mode-hook 'ac-js2-mode)
+  (setq js-indent-level 2)
+  (add-hook 'json-mode-hook
+            (lambda ()
+              (make-local-variable 'js-indent-level)
+              (setq js-indent-level 2)))
+  (setq js2-highlight-level 3)
+#+END_SRC
+
+* SQL mode
+#+name: sql
+#+BEGIN_SRC emacs-lisp
+  (starter-kit-install-if-needed 'sql)
+  (defalias 'sql-get-login 'ignore)
+#+END_SRC
+
+* AutoComplete
+#+name: autocomplete
+#+BEGIN_SRC emacs-lisp
+  (starter-kit-install-if-needed 'auto-complete)
+  (starter-kit-install-if-needed 'auto-complete-config)
+  ;; (setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
+  ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+  (ac-config-default)
+  (setq ac-auto-start 2)
+  ;; set the trigger key so that it can work together with yasnippet on tab key,
+  ;; if the word exists in yasnippet, pressing tab will cause yasnippet to
+  ;; activate, otherwise, auto-complete will
+  (ac-set-trigger-key "TAB")
+  (ac-set-trigger-key "<tab>")
+#+END_SRC
+
+* Yasnippet
+#+name: yasnippet
+#+begin_src emacs-lisp
+  (starter-kit-load "yasnippet")
+  (add-to-list 'ac-sources 'ac-source-yasnippet)
+#+end_src
+
+* IDO
+#+name: ido
+#+BEGIN_SRC emacs-lisp
+  (ido-mode 1)
+  (setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+
+  (setq org-completion-use-ido t)
+  ;; (starter-kit-install-if-needed 'ido-ubiquitous)
+  ;; (ido-ubiquitous-mode 1)
+  ;; (global-set-key "\C-x\C-b" 'ibuffer)
+#+END_SRC
+
+
+
 
